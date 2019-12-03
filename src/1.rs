@@ -6,16 +6,12 @@ fn fuel_for_module_mass(module_mass: i64) -> i64 {
 }
 
 fn main() {
-    let file = File::open("1.txt").expect("Unable to open file");
-    let br = BufReader::new(file);
-    let data: Vec<i64> = br.lines()
-        .map(|line| {
-            let str = line.expect("Could not parse line");
-            let num = str.parse::<i64>().unwrap();
-            fuel_for_module_mass(num)
-        })
-        .collect();
+    let file = File::open("1.txt").unwrap();
+    let lines = BufReader::new(file).lines();
 
-    let total: i64 = data.iter().sum();
+    let total: i64 = lines.map(|line| {
+        let num = line.unwrap().parse().unwrap();
+        fuel_for_module_mass(num)
+    }).sum();
     println!("{}", total);
 }
