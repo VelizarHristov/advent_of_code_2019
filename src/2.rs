@@ -10,7 +10,7 @@ fn get_op(opcode: u64) -> fn(u64, u64) -> u64 {
 
 fn main() {
     let file_contents = read_to_string("2.txt").unwrap();
-    let mut state: Vec<u64> = file_contents.split(",").map(|str| str.parse().unwrap()).collect();
+    let mut state: Vec<u64> = file_contents.split(",").map(|s| s.parse().unwrap()).collect();
     state[1] = 12; // as per spec
     state[2] = 2;  // as per spec
     let mut opcode_num = 0;

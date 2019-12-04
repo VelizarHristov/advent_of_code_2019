@@ -12,7 +12,7 @@ fn main() {
     let file_contents = read_to_string("2.txt").unwrap();
     for program_input_1 in 0..100 {
         for program_input_2 in 0..100 {
-            let mut state: Vec<u64> = file_contents.split(",").map(|str| str.parse().unwrap()).collect();
+            let mut state: Vec<u64> = file_contents.split(",").map(|s| s.parse().unwrap()).collect();
             state[1] = program_input_1;
             state[2] = program_input_2;
             let mut opcode_num = 0;
