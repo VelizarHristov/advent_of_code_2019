@@ -1,17 +1,11 @@
 fn has_group_of_two(string: &String) -> bool {
-    if string.is_empty() {
-        false
-    } else {
-        let first_char = string.chars().nth(0).unwrap();
-        let subsequence_size = string.chars().take_while(|c|
-            *c == first_char
-        ).collect::<Vec<_>>().len();
-        if subsequence_size == 2 {
-            true
-        } else {
-            has_group_of_two(&string.chars().skip(subsequence_size).collect())
-        }
-    }
+    let first_char = string.chars().nth(0).unwrap();
+    let subsequence_size = string.chars().take_while(|c|
+        *c == first_char
+    ).collect::<Vec<_>>().len();
+    let remaining = &string.chars().skip(subsequence_size).collect();
+    subsequence_size == 2 ||
+        (!remaining.is_empty() && has_group_of_two(remaining))
 }
 
 fn matches_criteria(i: &i32) -> bool {
