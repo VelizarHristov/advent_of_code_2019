@@ -8,6 +8,7 @@ fn get_op(opcode: u64) -> fn(u64, u64) -> u64 {
     }
 }
 
+// TODO: check whether using recursion instead of mutable state is going to be nicer
 fn main() {
     let file_contents = read_to_string("2.txt").unwrap();
     let mut state: Vec<u64> = file_contents.split(",").map(|s| s.parse().unwrap()).collect();

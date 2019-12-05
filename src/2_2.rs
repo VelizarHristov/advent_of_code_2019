@@ -8,6 +8,7 @@ fn get_op(opcode: u64) -> fn(u64, u64) -> u64 {
     }
 }
 
+// TODO: check whether using recursion instead of mutable state is going to be nicer
 fn main() {
     let file_contents = read_to_string("2.txt").unwrap();
     for program_input_1 in 0..100 {
