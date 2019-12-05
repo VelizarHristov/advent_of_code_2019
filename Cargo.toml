@@ -31,3 +31,8 @@ path = "src/1_2.rs"
 [[bin]]
 name = "2_part_two"
 path = "src/2_2.rs"
+
+
+[[bin]]
+name = "4_part_two"
+path = "src/4_2.rs"
