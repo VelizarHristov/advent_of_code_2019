@@ -1,3 +1,4 @@
+// NOTE: this is unfinished and doesn't work or even compile.
 use std::fs::read_to_string;
 
 fn str_to_direction(s: &str) -> (i32, i32) {
