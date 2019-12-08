@@ -1,4 +1,9 @@
+# IntelliJ
 /target
 **/*.rs.bk
 .idea
 *.iml
+
+# OCaml
+src_ocaml/_build
+src_ocaml/*.native
