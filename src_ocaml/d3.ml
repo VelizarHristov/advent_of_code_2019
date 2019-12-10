@@ -35,9 +35,9 @@ let rec movement_path start change =
     if change.magnitude = 0 then
         (start, Set.empty (module CmpIntTuple))
     else
-        let current = (inc_vec start change.direction) in
-        let (final_pos, remaining_path) = (movement_path current { change with magnitude = change.magnitude - 1 }) in
-        (final_pos, Set.add remaining_path current)
+        let current_pos = (inc_vec start change.direction) in
+        let (final_pos, remaining_path) = (movement_path current_pos { change with magnitude = change.magnitude - 1 }) in
+        (final_pos, Set.add remaining_path current_pos)
 
 let () =
     let lines = In_channel.read_lines "../3.txt" in
@@ -50,5 +50,5 @@ let () =
     ) change_seqs |> List.map ~f:Tuple2.get2 in
     let path1 :: path2 :: [] = path_sets in
     let common_positions = Set.inter path1 path2 in
-    let max_manhattan_dist = Set.map (module Int) ~f:(fun (x, y) -> abs(x) + abs(y)) common_positions |> Set.min_elt_exn in
-    print_endline (string_of_int (max_manhattan_dist))
+    let min_manhattan_dist = Set.map (module Int) ~f:(fun (x, y) -> abs(x) + abs(y)) common_positions |> Set.min_elt_exn in
+    print_endline (string_of_int (min_manhattan_dist))
