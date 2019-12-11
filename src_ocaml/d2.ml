@@ -4,7 +4,8 @@ open Printf
 
 let get_op opcode = match opcode with
   | 1 -> fun a b -> a + b
-  | _ -> fun a b -> a * b
+  | 2 -> fun a b -> a * b
+  | _ -> raise (Failure "Invalid opcode")
 
 let rec run_intcode_inner state cur_idx =
   let get = BatVect.get state in
