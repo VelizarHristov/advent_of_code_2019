@@ -7,3 +7,6 @@
 # OCaml
 src_ocaml/_build
 src_ocaml/*.native
+
+# VSCode or OCaml, unsure
+node_modules/.lsp/debug.log
