@@ -29,27 +29,27 @@ let parameter_count opcode = match opcode with
 
 let apply_op opcode param_modes program_input program_output state idx =
   let get = BatVect.get state in
-  let get_input i idx = match param_modes i with
-    | '0' -> get (get idx)
-    | '1' -> get idx
+  let get_input i = match param_modes i with
+    | '0' -> get (get (idx + i + 1))
+    | '1' -> get (idx + i + 1)
     | _ -> raise (Failure "Invalid param code") in
   match opcode with
   | 1 ->
-    let input_1 = get_input 0 (idx + 1) in
-    let input_2 = get_input 1 (idx + 2) in
+    let input_1 = get_input 0 in
+    let input_2 = get_input 1 in
     let output_idx = get (idx + 3) in
     let output = input_1 + input_2 in
     ((BatVect.set state output_idx output), program_output)
   | 2 ->
-    let input_1 = get_input 0 (idx + 1) in
-    let input_2 = get_input 1 (idx + 2) in
+    let input_1 = get_input 0 in
+    let input_2 = get_input 1 in
     let output_idx = get (idx + 3) in
     let output = input_1 * input_2 in
     ((BatVect.set state output_idx output), program_output)
   | 3 ->
     let output_idx = get (idx + 1) in
     ((BatVect.set state output_idx program_input), program_output)
-  | 4 -> (state, get_input 0 (idx + 1))
+  | 4 -> (state, get_input 0)
   | _ -> raise (Failure "Invalid opcode")
 
 let run_intcode program_input start_state =
