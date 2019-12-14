@@ -94,8 +94,9 @@ let rec run_intcode state =
 let () =
     let start_state =
       let file_input = In_channel.read_lines "../9.txt" |> List.hd_exn in
+      let program_input = 1 in (* 1 for part 1, 2 for part 2 *)
       let start_code = List.map ~f:Big_int.of_string (String.split file_input ~on:',') |> BatVect.of_list in
-      { code = start_code; idx = 0; rel_base = 0; inputs = [1]; outputs = [] } in
+      { code = start_code; idx = 0; rel_base = 0; inputs = [program_input]; outputs = [] } in
     let outputs = run_intcode start_state in
     let outputs_str = List.map ~f:Big_int.to_string outputs in
     print_endline (String.concat outputs_str);
