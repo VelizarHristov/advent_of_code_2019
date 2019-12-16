@@ -41,7 +41,9 @@ let rec blast_order x y x_grid_size y_grid_size has_asteroid ratios =
         let blasted = List.map ~f:(fun (x2, y2) -> (x + x2, y + y2)) matching in
         (* List.iter ratios_in_boundaries ~f:(fun xy -> tuple_to_str xy |> print_endline); *)
         let next = List.map ~f:next_values matching in
-        blasted @ (blast_order x y x_grid_size y_grid_size has_asteroid next)
+        blasted :: (blast_order x y x_grid_size y_grid_size has_asteroid next)
+let get_visible_asteroid_count x y x_grid_size y_grid_size has_asteroid ratios = List.length (List.hd_exn (blast_order x y x_grid_size y_grid_size has_asteroid ratios))
+let get_blast_order x y x_grid_size y_grid_size has_asteroid ratios = List.concat (blast_order x y x_grid_size y_grid_size has_asteroid ratios)
 
 let () =
     let lines = In_channel.read_lines "../10.txt" in
@@ -55,17 +57,6 @@ let () =
     let y_grid_size = BatVect.length grid in
     let get x y = (BatVect.get (BatVect.get grid y) x) in
     let grid_positions = List.map ~f:(fun x -> List.map ~f:(fun y -> (x, y)) (List.range 0 y_grid_size)) (List.range 0 x_grid_size) |> List.concat in
-    let asteroid_positions = List.filter ~f:(fun (x, y) -> get x y) grid_positions |> BatVect.of_list in
-    let visible_asteroids_counts = BatVect.map (fun (x, y) ->
-        let relative_positions = BatVect.map (fun (x2, y2) -> (x2 - x, y2 - y)) asteroid_positions in
-        let asteroid_exists_relative x2 y2 = get (x + x2) (y + y2) in
-        let visible_asteroids = BatVect.filter (fun (x2, y2) ->
-            if x2 = 0 && y2 = 0 then false else is_visible x2 y2 asteroid_exists_relative
-        ) relative_positions in
-        (x, y, BatVect.length visible_asteroids)
-    ) asteroid_positions in
-
-    let (x, y, _) = List.max_elt (BatVect.to_list visible_asteroids_counts) ~compare:(fun a b -> compare (Tuple3.get3 a) (Tuple3.get3 b)) |> Option.value_exn in
     let to_ratio (x, y) = if y = 0 then Float.max_value else ((float_of_int x) /. (float_of_int y)) in
     let quadrant_ratios = grid_positions
         |> List.filter ~f:(fun (x, y) -> gcd x y = 1)
@@ -76,7 +67,14 @@ let () =
         List.map ~f:(fun (x, y) -> (x, -y)) quadrant_ratios |> List.filter ~f:(fun (_, y) -> y <> 0) |> List.rev;
         List.map ~f:(fun (x, y) -> (-x, -y)) quadrant_ratios |> List.filter ~f:(fun (x, y) -> x <> 0 && y <> 0);
         List.map ~f:(fun (x, y) -> (-x, y)) quadrant_ratios |> List.filter ~f:(fun (x, _) -> x <> 0) |> List.rev]) in
-    let order = blast_order x y x_grid_size y_grid_size get ratios in
+    let asteroid_positions = List.filter ~f:(fun (x, y) -> get x y) grid_positions |> BatVect.of_list in
+    let visible_asteroids_counts = BatVect.map (fun (x, y) ->
+        let len = get_visible_asteroid_count x y x_grid_size y_grid_size get ratios in
+        (x, y, len)
+    ) asteroid_positions in
+
+    let (x, y, _) = List.max_elt (BatVect.to_list visible_asteroids_counts) ~compare:(fun a b -> compare (Tuple3.get3 a) (Tuple3.get3 b)) |> Option.value_exn in
+    let order = get_blast_order x y x_grid_size y_grid_size get ratios in
 
     print_endline ("base: (" ^ (string_of_int x) ^ ", " ^ (string_of_int y) ^ ")");
     let i = ref 1 in
