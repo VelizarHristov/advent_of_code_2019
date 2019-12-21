@@ -65,8 +65,8 @@ let rec print_tiles colors =
   let max_x = List.reduce_exn ~f:max x_values in
   let min_y = List.reduce_exn ~f:min y_values in
   let max_y = List.reduce_exn ~f:max y_values in
-    for y = min_y to max_y do
-  for x = min_x to max_x do
+  for y = min_y to max_y do
+    for x = min_x to max_x do
       let color = Map.find colors (x, y) |> Option.value ~default:0 in
       print_string (string_of_int color)
     done;
