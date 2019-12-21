@@ -30,9 +30,9 @@ let toggle_direction direction i =
     let new_idx = modulo (current_idx + i) (List.length directions) in
     List.nth_exn directions new_idx
 let move_in_direction (x, y) dir = match dir with
-    | 'U' -> (x, y + 1)
+    | 'U' -> (x, y - 1)
     | 'R' -> (x + 1, y)
-    | 'D' -> (x, y - 1)
+    | 'D' -> (x, y + 1)
     | 'L' -> (x - 1, y)
 
 let rec run_intcode state = match Intcode.run_intcode_once state with
@@ -57,12 +57,27 @@ let rec run_robot_cleaning_inner state current_pos current_direction colors =
     | None -> colors
 let run_robot_cleaning state = run_robot_cleaning_inner state (0, 0) 'U' (Map.empty (module CmpIntTuple))
 
+let rec print_tiles colors =
+  let positions = Map.keys colors in
+  let x_values = List.map ~f:Tuple2.get1 positions in
+  let y_values = List.map ~f:Tuple2.get2 positions in
+  let min_x = List.reduce_exn ~f:min x_values in
+  let max_x = List.reduce_exn ~f:max x_values in
+  let min_y = List.reduce_exn ~f:min y_values in
+  let max_y = List.reduce_exn ~f:max y_values in
+    for y = min_y to max_y do
+  for x = min_x to max_x do
+      let color = Map.find colors (x, y) |> Option.value ~default:0 in
+      print_string (string_of_int color)
+    done;
+    print_string "\n"
+  done
+
 let () =
     let start_state =
       let file_input = In_channel.read_lines "../11.txt" |> List.hd_exn in
       let start_code = List.map ~f:Big_int.of_string (String.split file_input ~on:',') |> BatVect.of_list in
-      { code = start_code; idx = 0; rel_base = 0; inputs = [0]; outputs = [] } in
+      { code = start_code; idx = 0; rel_base = 0; inputs = [1]; outputs = [] } in
 
     let painted_colors = run_robot_cleaning start_state in
-    let num_painted_tiles = Map.keys painted_colors |> List.length in
-    print_endline (string_of_int num_painted_tiles)
+    print_tiles painted_colors
